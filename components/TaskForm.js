@@ -1,6 +1,6 @@
 import { useContext } from "react";
-import Cookie from "universal-cookie";
 import { StateContext } from "../context/StateContext";
+import Cookie from "universal-cookie";
 
 const cookie = new Cookie();
 
@@ -10,7 +10,7 @@ export default function TaskForm({ taskCreated }) {
     e.preventDefault();
     await fetch(`${process.env.NEXT_PUBLIC_RESTAPI_URL}api/tasks/`, {
       method: "POST",
-      body: JSON.stringify({ title: setSelectedTask.title }),
+      body: JSON.stringify({ title: selectedTask.title }),
       headers: {
         "Content-Type": "application/json",
         Authorization: `JWT ${cookie.get("access_token")}`,
@@ -23,16 +23,15 @@ export default function TaskForm({ taskCreated }) {
     setSelectedTask({ id: 0, title: "" });
     taskCreated();
   };
-
   const update = async (e) => {
     e.preventDefault();
     await fetch(
-      `${process.env.NEXT_PUBLIC_RESTAPI_URL}api/tasks/${selectedTask.id}`,
+      `${process.env.NEXT_PUBLIC_RESTAPI_URL}api/tasks/${selectedTask.id}/`,
       {
         method: "PUT",
         body: JSON.stringify({ title: selectedTask.title }),
         headers: {
-          "content-type": "application/json",
+          "Content-Type": "application/json",
           Authorization: `JWT ${cookie.get("access_token")}`,
         },
       }
@@ -44,7 +43,6 @@ export default function TaskForm({ taskCreated }) {
     setSelectedTask({ id: 0, title: "" });
     taskCreated();
   };
-
   return (
     <div>
       <form onSubmit={selectedTask.id !== 0 ? update : create}>

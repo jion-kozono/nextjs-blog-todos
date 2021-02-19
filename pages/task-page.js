@@ -1,9 +1,9 @@
-import Link from "next/link";
-import Layout from "../components/Layout";
-import Task from "../components/Task";
-import { getAllTasksData } from "../lib/tasks";
-import useSWR from "swr";
 import { useEffect } from "react";
+import Layout from "../components/Layout";
+import Link from "next/link";
+import { getAllTasksData } from "../lib/tasks";
+import Task from "../components/Task";
+import useSWR from "swr";
 import StateContextProvider from "../context/StateContext";
 import TaskForm from "../components/TaskForm";
 
@@ -14,39 +14,35 @@ export default function TaskPage({ staticFilteredTasks }) {
   const { data: tasks, mutate } = useSWR(apiUrl, fetcher, {
     initialData: staticFilteredTasks,
   });
-
   const filteredTasks = tasks?.sort(
     (a, b) => new Date(b.created_at) - new Date(a.created_at)
   );
-
   useEffect(() => {
     mutate();
   }, []);
-
   return (
     <StateContextProvider>
-      <Layout title="Task Page">
+      <Layout title="Task page">
         <TaskForm taskCreated={mutate} />
-        <ur>
-          {filteredTasks?.length &&
+        <ul>
+          {filteredTasks &&
             filteredTasks.map((task) => (
               <Task key={task.id} task={task} taskDeleted={mutate} />
             ))}
-        </ur>
+        </ul>
         <Link href="/main-page">
           <div className="flex cursor-pointer mt-12">
             <svg
               className="w-6 h-6 mr-3"
-              xmlns="http://www.w3.org/2000/svg"
               fill="none"
-              viewBox="0 0 24 24"
               stroke="currentColor"
-              ƒ
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
             >
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                strokeWidth="2"
+                strokeWidth={2}
                 d="M11 19l-7-7 7-7m8 14l-7-7 7-7"
               />
             </svg>
@@ -57,7 +53,6 @@ export default function TaskPage({ staticFilteredTasks }) {
     </StateContextProvider>
   );
 }
-
 export async function getStaticProps() {
   const staticFilteredTasks = await getAllTasksData();
 
